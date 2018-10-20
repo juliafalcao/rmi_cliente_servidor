@@ -10,7 +10,6 @@ Descreve a implementação do objeto remoto que representa um pedido enviado por
 */
 public interface InterfaceRequisicao extends Remote {
 
-    public void requisicao(int cliente, int op, String arquivo) throws RemoteException;
+    public void requisicao(int cliente, int op, int arquivo) throws RemoteException;
 
-    public void printFila() throws RemoteException;
 }

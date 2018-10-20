@@ -51,7 +51,6 @@ public class Cliente {
             Random r = new Random();
             Cliente cliente;
             int c, arquivo, op;
-            String nome_arquivo;
 
             // escolher aleatoriamente um cliente, uma operação e um arquivo
             // roda até todos os clientes terem feito 10 requisições cada
@@ -76,15 +75,8 @@ public class Cliente {
 
                 arquivo = r.nextInt(3);
 
-                switch (arquivo) {
-                    case 0: nome_arquivo = ARQUIVO_A; break;
-                    case 1: nome_arquivo = ARQUIVO_B; break;
-                    case 2: nome_arquivo = ARQUIVO_C; break;
-                    default: nome_arquivo = null; break;
-                }
-
                 // enviar requisição e incrementar contagem
-                cliente.obj.requisicao(c, op, nome_arquivo);
+                cliente.obj.requisicao(c, op, arquivo);
                 contagem[c]++;
                 cliente.obj.printFila();
             }
