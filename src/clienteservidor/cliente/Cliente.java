@@ -71,11 +71,15 @@ public class Cliente {
 
             // escolher aleatoriamente um cliente, uma operação e um arquivo
             // roda até todos os clientes terem feito 10 requisições cada
-            while (contagem[0] <= 10 && contagem[1] <= 10 && contagem[2] <= 10) {
+            while (contagem[0] + contagem[1] + contagem[2] < 30) {
+                System.out.println("entrou no while");
                 c = r.nextInt(3); // escolhe cliente aleatório
 
-                if (contagem[c] >= 10)
+                if (contagem[c] == 10) { // se o cliente sorteado já completou 10, escolher outro
+                    System.out.println("continue");
                     continue;
+                }
+
 
                 switch (c) { // setar variável cliente como a classe do cliente escolhido
                     case CLIENTE_1: cliente = cliente1; break;
@@ -96,6 +100,8 @@ public class Cliente {
                 // chamar método de requisição e incrementar contagem
                 cliente.obj.requisicao(c, op, arquivo);
                 contagem[c]++;
+
+                System.out.printf("CONTAGENS: %d %d %d%n", contagem[0], contagem[1], contagem[2]);
             }
         }
 

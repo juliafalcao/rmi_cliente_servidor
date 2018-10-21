@@ -30,8 +30,8 @@ public class ThreadOperacao extends Thread {
     String nome_arquivo;
     Random r = new Random();
 
-    int SLEEP_MIN = 100;
-    int SLEEP_MAX = 400;
+    int SLEEP_MIN = 5000;
+    int SLEEP_MAX = 15000;
 
 
     /* Construtor que recebe os índices da operação e do arquivo, e o nome da thread. */
