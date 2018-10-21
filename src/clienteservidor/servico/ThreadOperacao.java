@@ -27,19 +27,26 @@ public class ThreadOperacao extends Thread {
 
     int op, arquivo; // índices da operação (0 ou 1) e do arquivo (0, 1 ou 2)
     String nomeArquivo;
+    String resposta = null; // resposta da operação para enviar ao cliente
     Random r = new Random(System.currentTimeMillis());
 
     int SLEEP_MIN = 5000;
     int SLEEP_MAX = 15000;
 
 
-    /* Construtor que recebe os índices da operação e do arquivo, e o nome da thread. */
-    public ThreadOperacao(int operacao, int arquivo, String threadName) {
+    /* Construtor que recebe o nome da thread, os identificadores de operação e do arquivo, e uma String de conteúdo se
+    a operação for de escrita (caso contrário, null). */
+    public ThreadOperacao(String threadName, int operacao, int arquivo, String conteudo) {
         super(threadName); // chama construtor de Thread e passa o nome
 
         if (op < 0 || op > 1) {
             System.err.println("Exceção no construtor de ThreadOperacao.");
             throw new IllegalArgumentException("O valor de op deve ser 0 (leitura) ou 1 (escrita).");
+        }
+
+        if (op == ESCRITA && conteudo == null) {
+            System.err.println("Erro em ThreadOperacao: Operação de escrita mas conteúdo nulo. Nada será escrito.");
+            conteudo = "";
         }
 
         this.op = operacao;
@@ -48,6 +55,7 @@ public class ThreadOperacao extends Thread {
     }
 
     /* Código executado pela thread após ser iniciada */
+    @Override
     public void run() {
         try {
             File file = new File("src\\clienteservidor\\arquivos\\" + nomeArquivo);
@@ -75,6 +83,8 @@ public class ThreadOperacao extends Thread {
                 System.out.printf("Thread %s está lendo o arquivo %s...%n", getName(), nomeArquivo);
                 Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep para a thread não ser rápida demais
                 in.close();
+
+                resposta = "Cliente " + getName().charAt(0) + " leu " + conteudo.length() + " do arquivo " + nomeArquivo + ".\n";
             }
 
             else { // efetuar escrita
@@ -94,6 +104,8 @@ public class ThreadOperacao extends Thread {
 
                 locks[arquivo] = false;
                 System.out.printf("Arquivo %s foi desbloqueado.%n", nomeArquivo);
+
+                resposta = "Cliente " + getName().charAt(0) + " escreveu uma linha no arquivo " + nomeArquivo + ".\n";
             }
 
             System.out.printf("Thread %s terminou sua operação.%n", getName());
@@ -104,5 +116,14 @@ public class ThreadOperacao extends Thread {
             e.printStackTrace();
             System.exit(0);
         }
+    }
+ 
+    /* funçao de retorno da thread */
+    public String resposta() {
+        while (isAlive()) {
+            // gambiarríssima pra esperar a thread ser finalizada
+        }
+
+        return resposta;
     }
 }

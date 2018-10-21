@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import clienteservidor.servico.ThreadOperacao;
+import clienteservidor.cliente.Cliente;
 import static clienteservidor.cliente.Cliente.*; // constantes declaradas em Cliente
 import clienteservidor.servidor.Servidor;
 
@@ -24,15 +25,21 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
     }
 
     /* Função que representa uma requisição feita por algum cliente para executar uma leitura ou escrita em algum dos arquivos.
-    O servidor cria uma thread para a operação. */
-    public void requisicao(int cliente, int op, int arquivo) throws RemoteException {
+    O servidor cria uma thread para a operação.
+    Parâmetros:
+        cliente: identificador [0-3] do cliente que fez a requisição
+        op: 0 (leitura) ou 1 (escrita)
+        arquivo: identificador [0-3] do arquivo no qual será feita a operação
+        conteudo: o que será escrito no arquivo, ou null em caso de leitura
+    */
+    public String requisicao(int cliente, int op, int arquivo, String conteudo) throws RemoteException {
         String nomeArquivo = nomeArquivo(arquivo);
         System.out.printf("Nova requisição chega ao servidor: Cliente %d quer fazer %s no arquivo %s.%n", cliente, (op == 0 ? "leitura" : "escrita"), nomeArquivo.charAt(0));
 
         try {
             String threadName = new String(cliente + "-" + (op == 0 ? "L" : "E") + "-" + nomeArquivo.charAt(0));
             // ex.: "1-E-B" = thread do cliente 1 escrevendo no arquivo B.txt
-            ThreadOperacao thread = new ThreadOperacao(op, arquivo, threadName);
+            ThreadOperacao thread = new ThreadOperacao(threadName, op, arquivo, conteudo);
             
             if (servidor.temPrioridade()) {
                 if (op == LEITURA) {
@@ -43,6 +50,9 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
             listaThreads.add(thread);
             thread.start();
             System.out.printf("Iniciando a thread %s.%n", thread.getName());
+
+            // obter resposta após a thread ser finalizada
+            return thread.resposta();
         }
 
         catch (Exception e) {
@@ -50,6 +60,8 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
             e.printStackTrace();
             System.exit(0);
         }
+
+        return null;
     }
 
     public void printStatus() throws RemoteException {

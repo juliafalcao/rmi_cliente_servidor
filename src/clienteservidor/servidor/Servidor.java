@@ -26,7 +26,6 @@ public class Servidor {
         return prioritario;
     }
 
-
     /* Main */
     public static void main(String[] args) {
 

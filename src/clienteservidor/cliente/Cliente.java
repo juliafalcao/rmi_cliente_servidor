@@ -14,6 +14,7 @@ Classe principal que vai gerar os 3 clientes e suas requisições de leitura e e
 */
 public class Cliente {
 
+    public int id;
     private InterfaceRequisicao obj; // a interface do objeto remoto
 
     /* constantes */
@@ -29,7 +30,9 @@ public class Cliente {
 
 
     /* Construtor */
-    Cliente() {
+    Cliente(int id) {
+        this.id = id;
+
         try {
             obj = (InterfaceRequisicao) Naming.lookup(objName);
         }
@@ -41,7 +44,6 @@ public class Cliente {
         }
     }
 
-
     /* Função auxiliar que recebe um índice de arquivo [0-2] e retorna seu nome */
     public static String nomeArquivo(int index) {
         switch (index) {
@@ -52,19 +54,18 @@ public class Cliente {
         }
     }
 
-
     /* Main */
     public static void main(String[] args) {
 
         try {
-            Cliente cliente1 = new Cliente();
-            Cliente cliente2 = new Cliente();
-            Cliente cliente3 = new Cliente();
+            Cliente cliente1 = new Cliente(CLIENTE_1);
+            Cliente cliente2 = new Cliente(CLIENTE_2);
+            Cliente cliente3 = new Cliente(CLIENTE_3);
             Cliente cliente;
             Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
-            int[] contagem = {0, 0, 0};
+            int[] contagem = {0, 0, 0}; // contagem de requisições por cliente
             int c, arquivo, op;
-
+            String conteudo; // o que será escrito no arquivo, em caso de leitura
         
             // escolher aleatoriamente um cliente, uma operação e um arquivo
             // roda até todos os clientes terem feito 10 requisições cada
@@ -82,20 +83,27 @@ public class Cliente {
                     case CLIENTE_3: cliente = cliente3; break;
                     default: cliente = null; break;
                 }
-                
-                op = r.nextInt(3); /* mudar para 2 para igualar as probabilidades */
-                switch (op) {
-                    case 0: op = ESCRITA; break;
-                    default: op = LEITURA; break;
-                    // se cair 0 será escrita e se cair 1 ou 2 será leitura, assim a leitura é mais provável
-                }
 
                 arquivo = r.nextInt(3);
+                
+                op = r.nextInt(3); /* mudar para 2 para igualar as probabilidades */
+                
+                switch (op) {
+                    case 0:
+                    op = ESCRITA;
+                    conteudo = "Cliente " + c + " esteve aqui!\n";
+                    break;
 
+                    default: op = LEITURA;
+                    conteudo = null;
+                    break;
+                }
+                
                 System.out.printf("Cliente %d quer fazer uma %s no arquivo %s.%n", c, op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
-
+                
                 // chamar método de requisição e incrementar contagem
-                cliente.obj.requisicao(c, op, arquivo);
+                String retorno = cliente.obj.requisicao(c, op, arquivo, conteudo);
+                System.out.println("Retorno: " + retorno);
                 contagem[c]++;
 
                 System.out.printf("Contagem de requisições: %d / %d / %d%n", contagem[0], contagem[1], contagem[2]);
