@@ -12,7 +12,6 @@ import java.io.FileOutputStream;
 
 import clienteservidor.servidor.Servidor;
 import static clienteservidor.cliente.Cliente.*;
-import static clienteservidor.cliente.Cliente.nomeArquivo;
 
 /*
 Classe que representa uma thread, sendo que cada thread é criada para efetuar uma operação de leitura ou escrita em um arquivo,
@@ -28,7 +27,7 @@ public class ThreadOperacao extends Thread {
 
     int op, arq; // índices da operação (0 ou 1) e do arquivo (0, 1 ou 2)
     String nome_arquivo;
-    Random r = new Random();
+    Random r = new Random(System.currentTimeMillis());
 
     int SLEEP_MIN = 5000;
     int SLEEP_MAX = 15000;

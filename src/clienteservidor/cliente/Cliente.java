@@ -65,7 +65,7 @@ public class Cliente {
             Cliente cliente2 = new Cliente();
             Cliente cliente3 = new Cliente();
             Cliente cliente;
-            Random r = new Random(); // gerador de números aleatórios
+            Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
             int[] contagem = {0, 0, 0};
             int c, arquivo, op;
 

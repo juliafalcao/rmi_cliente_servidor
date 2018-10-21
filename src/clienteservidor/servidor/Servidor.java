@@ -15,17 +15,16 @@ Servidor multithreaded que recebe pedidos, coloca-os numa fila e realiza operaç
 
 public class Servidor {
 
-    /* construtor */
+    /* Construtor */
     public Servidor() {
     }
 
 
-    /* main */
+    /* Main */
     public static void main(String[] args) {
 
         try {
             Registry registry = LocateRegistry.createRegistry(1099);
-            int port = registry.REGISTRY_PORT;
 
             InterfaceRequisicao obj = new RemoteRequisicao();
             registry.rebind("Requisicao", obj);
