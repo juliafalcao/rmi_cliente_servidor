@@ -15,8 +15,11 @@ Servidor multithreaded que recebe pedidos, coloca-os numa fila e realiza operaç
 
 public class Servidor {
 
+    public boolean prioritario; // diz se o servidor é prioritário ou não
+
     /* Construtor */
-    public Servidor() {
+    public Servidor(boolean servidorPrioritario) {
+        prioritario = servidorPrioritario;
     }
 
 
@@ -24,15 +27,15 @@ public class Servidor {
     public static void main(String[] args) {
 
         try {
-            Registry registry = LocateRegistry.createRegistry(1099);
-
-            InterfaceRequisicao obj = new RemoteRequisicao();
+            Servidor servidor = new Servidor(False); /* mudar boolean para demonstrar ambos os servidores */
+            Registry registry = LocateRegistry.createRegistry(1099); // criação do Registro RMI
+            InterfaceRequisicao obj = new RemoteRequisicao(servidor); // criação do objeto remoto
             registry.rebind("Requisicao", obj);
-            System.out.println("Servidor pronto!");
+            System.out.println("Servidor está rodando e pronto para uso.");
         }
 
         catch (Exception e) {
-            System.err.println("Exceção no servidor: " + e.toString());
+            System.err.println("Exceção no Servidor: " + e.toString());
             e.printStackTrace();
             System.exit(0);
         }

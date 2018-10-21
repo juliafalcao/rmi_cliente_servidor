@@ -44,16 +44,12 @@ public class Cliente {
 
     /* Função auxiliar que recebe um índice de arquivo [0-2] e retorna seu nome */
     public static String nomeArquivo(int index) {
-        String nome;
-
         switch (index) {
-            case 0: nome = ARQUIVO_A; break;
-            case 1: nome = ARQUIVO_B; break;
-            case 2: nome = ARQUIVO_C; break;
-            default: nome = null; break;
+            case 0: return ARQUIVO_A;
+            case 1: return ARQUIVO_B;
+            case 2: return ARQUIVO_C;
+            default: return null;
         }
-
-        return nome;
     }
 
 
@@ -69,17 +65,16 @@ public class Cliente {
             int[] contagem = {0, 0, 0};
             int c, arquivo, op;
 
+        
             // escolher aleatoriamente um cliente, uma operação e um arquivo
             // roda até todos os clientes terem feito 10 requisições cada
-            while (contagem[0] + contagem[1] + contagem[2] < 30) {
-                System.out.println("entrou no while");
+            while (contagem[CLIENTE_1] + contagem[CLIENTE_2] + contagem[CLIENTE_3] < 30) {
+
                 c = r.nextInt(3); // escolhe cliente aleatório
 
                 if (contagem[c] == 10) { // se o cliente sorteado já completou 10, escolher outro
-                    System.out.println("continue");
                     continue;
                 }
-
 
                 switch (c) { // setar variável cliente como a classe do cliente escolhido
                     case CLIENTE_1: cliente = cliente1; break;
@@ -88,7 +83,7 @@ public class Cliente {
                     default: cliente = null; break;
                 }
                 
-                op = r.nextInt(3);
+                op = r.nextInt(3); /* mudar para 2 para igualar as probabilidades */
                 switch (op) {
                     case 0: op = ESCRITA; break;
                     default: op = LEITURA; break;
@@ -97,11 +92,13 @@ public class Cliente {
 
                 arquivo = r.nextInt(3);
 
+                System.out.printf("Cliente %d quer fazer uma %s no arquivo %s.%n", c, op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
+
                 // chamar método de requisição e incrementar contagem
                 cliente.obj.requisicao(c, op, arquivo);
                 contagem[c]++;
 
-                System.out.printf("CONTAGENS: %d %d %d%n", contagem[0], contagem[1], contagem[2]);
+                System.out.printf("Contagem de requisições: %d / %d / %d%n", contagem[0], contagem[1], contagem[2]);
             }
         }
 

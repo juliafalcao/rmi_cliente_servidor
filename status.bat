@@ -1,0 +1,1 @@
+java -cp bin clienteservidor.cliente.Debug

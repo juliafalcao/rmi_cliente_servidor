@@ -26,7 +26,7 @@ public class ThreadOperacao extends Thread {
     */
 
     int op, arq; // índices da operação (0 ou 1) e do arquivo (0, 1 ou 2)
-    String nome_arquivo;
+    String nomeArquivo;
     Random r = new Random(System.currentTimeMillis());
 
     int SLEEP_MIN = 5000;
@@ -44,13 +44,13 @@ public class ThreadOperacao extends Thread {
 
         op = operacao;
         arq = arquivo;
-        nome_arquivo = nomeArquivo(arq);
+        nomeArquivo = nomeArquivo(arq);
     }
 
-    /* Código executado pela thread após ser iniciada. */
+    /* Código executado pela thread após ser iniciada */
     public void run() {
         try {
-            File file = new File("src\\clienteservidor\\arquivos\\" + nome_arquivo);
+            File file = new File("src\\clienteservidor\\arquivos\\" + nomeArquivo);
 
             if (!file.canRead() || !file.canWrite()) { // checar permissões
                 System.err.println("Arquivo não está acessível para leitura ou para escrita.");
@@ -59,40 +59,44 @@ public class ThreadOperacao extends Thread {
 
             // checar se o arquivo não está bloqueado para escrita, e se estiver, esperar um tempo e checar novamente
             while (locks[arq]) {
-                System.out.printf("Thread %s ainda não pode ler o arquivo %s pois ele está bloqueado para escrita.%n", getName(), nome_arquivo);
+                System.out.printf("Thread %s não pode ler o arquivo %s pois ele está bloqueado.%n", getName(), nomeArquivo);
                 Thread.sleep(SLEEP_MIN);
             }
 
 
             if (op == 0) { // efetuar leitura
-                String trash;
+                String conteudo = "";
                 
                 Scanner in = new Scanner(file);
                 while (in.hasNext()) {
-                    trash = in.nextLine();
+                    conteudo += in.nextLine();
                 }
 
-                System.out.printf("Thread %s está lendo o arquivo %s.%n", getName(), nome_arquivo);
+                System.out.printf("Thread %s está lendo o arquivo %s...%n", getName(), nomeArquivo);
                 Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep para a thread não ser rápida demais
                 in.close();
             }
 
             else { // efetuar escrita
                 if (locks[arq]) {
-                    System.err.println("DEBUG: entrou na escrita quando estava com lock. ERRADO");
+                    System.err.println("ERRO: permitiu chegar na escrita mas o lock está ativado.");
+                    System.exit(0);
                 }
 
                 locks[arq] = true; // bloqueia arquivo para escrita
-                System.out.printf("Arquivo %s foi bloqueado para escrita.%n", nome_arquivo);
+                System.out.printf("Arquivo %s foi bloqueado.%n", nomeArquivo);
 
                 PrintWriter writer = new PrintWriter(new FileOutputStream(file, true));
-                writer.println(r.nextInt(1000)); // escreve número aleatório entre 0 e 1000 no arquivo
-                System.out.printf("Thread %s está escrevendo no arquivo %s.%n", getName(), nome_arquivo);
-                Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX));
+                writer.println("O cliente " + getName().charAt(0) + " esteve aqui!"); // escreve no arquivo
+                System.out.printf("Thread %s está escrevendo no arquivo %s...%n", getName(), nomeArquivo);
+                Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep por tempo aleatório
                 writer.close();
+
                 locks[arq] = false;
-                System.out.printf("Arquivo %s foi desbloqueado.%n", nome_arquivo);
+                System.out.printf("Arquivo %s foi desbloqueado.%n", nomeArquivo);
             }
+
+            System.out.printf("Thread %s terminou sua operação.%n", getName());
         }
 
         catch (Exception e) {
