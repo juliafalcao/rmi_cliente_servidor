@@ -100,13 +100,119 @@ public class Cliente {
                 }
                 
                 System.out.printf("Cliente %d quer fazer uma %s no arquivo %s.%n", c, op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
-                
+
                 // chamar método de requisição e incrementar contagem
                 cliente.obj.requisicao(c, op, arquivo, conteudo);
                 contagem[c]++;
 
                 System.out.printf("Contagem de requisições: %d / %d / %d%n", contagem[0], contagem[1], contagem[2]);
             }
+        }
+
+        catch (Exception e) {
+            System.err.println("Exceção no Cliente: " + e.toString());
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
+
+    public void thiago(){
+        try {
+
+
+
+
+
+
+
+            Runnable Cliente1Requests() -> {
+                Cliente cliente1 = new Cliente(CLIENTE_1);
+                Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
+                int c, arquivo, op;   // o que será escrito no arquivo, em caso de leitura
+                String conteudo;
+                while (int contagem  <10){
+
+                    arquivo = r.nextInt(3);
+                    op = r.nextInt(3); /* mudar para 2 para igualar as probabilidades */
+
+                    switch (op) {
+                        case 0:
+                            op = ESCRITA;
+                            conteudo = "Cliente " + c + " esteve aqui!\n";
+                            break;
+
+                        default:
+                            op = LEITURA;
+                            conteudo = null;
+                            break;
+                    }
+                    System.out.printf("Cliente %d quer fazer uma %s no arquivo %s.%n", 1, op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
+                    // chamar método de requisição e incrementar contagem
+                    String retorno = cliente1.obj.requisicao(1, op, arquivo, conteudo);
+                    System.out.println("Retorno: " + retorno);
+                    contagem++;
+
+                }
+            }
+            Runnable Cliente2Requests() -> {
+                Cliente cliente2 = new Cliente(CLIENTE_2);
+                Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
+                int arquivo, op;   // o que será escrito no arquivo, em caso de leitura
+                String conteudo;
+                while (int contagem  <10){
+
+                    arquivo = r.nextInt(3);
+                    op = r.nextInt(3); /* mudar para 2 para igualar as probabilidades */
+
+                    switch (op) {
+                        case 0:
+                            op = ESCRITA;
+                            conteudo = "Cliente " + c + " esteve aqui!\n";
+                            break;
+
+                        default:
+                            op = LEITURA;
+                            conteudo = null;
+                            break;
+                    }
+                    System.out.printf("Cliente %d quer fazer uma %s no arquivo %s.%n", 2, op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
+                    // chamar método de requisição e incrementar contagem
+                    String retorno = cliente2.obj.requisicao(2, op, arquivo, conteudo);
+                    System.out.println("Retorno: " + retorno);
+                    contagem++;
+
+                }
+            }
+            Runnable Cliente1Requests() -> {
+                Cliente cliente3 = new Cliente(CLIENTE_3);
+                Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
+                int c, arquivo, op;   // o que será escrito no arquivo, em caso de leitura
+                String conteudo;
+                while ( int contagem  <10){
+                    cliente = cliente1;
+                    arquivo = r.nextInt(3);
+                    op = r.nextInt(3); /* mudar para 2 para igualar as probabilidades */
+
+                    switch (op) {
+                        case 0:
+                            op = ESCRITA;
+                            conteudo = "Cliente " + c + " esteve aqui!\n";
+                            break;
+
+                        default:
+                            op = LEITURA;
+                            conteudo = null;
+                            break;
+                    }
+                    System.out.printf("Cliente %d quer fazer uma %s no arquivo %s.%n", 3, op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
+                    // chamar método de requisição e incrementar contagem
+                    String retorno = cliente3.obj.requisicao(3, op, arquivo, conteudo);
+                    System.out.println("Retorno: " + retorno);
+                    contagem++;
+
+                }
+            }
+
         }
 
         catch (Exception e) {
