@@ -9,8 +9,9 @@ import clienteservidor.servico.*;
 import clienteservidor.servidor.*;
 
 
-/* Classe principal que vai gerar os 3 clientes e suas requisições de leitura e escrita nos arquivos. */
-
+/*
+Classe principal que vai gerar os 3 clientes e suas requisições de leitura e escrita nos arquivos.
+*/
 public class Cliente {
 
     private InterfaceRequisicao obj; // a interface do objeto remoto
@@ -21,35 +22,51 @@ public class Cliente {
     public static final String ARQUIVO_C = "C.txt";
     public static final int LEITURA = 0;
     public static final int ESCRITA = 1;
-    public static final int CLIENTE_1 = 1;
-    public static final int CLIENTE_2 = 2;
-    public static final int CLIENTE_3 = 3;
+    public static final int CLIENTE_1 = 0;
+    public static final int CLIENTE_2 = 1;
+    public static final int CLIENTE_3 = 2;
+    public static final String objName = "rmi://localhost:2020/Requisicao";
 
-    /* construtor */
+
+    /* Construtor */
     Cliente() {
         try {
-            obj = (InterfaceRequisicao) Naming.lookup("rmi://localhost:2020/Requisicao");
+            obj = (InterfaceRequisicao) Naming.lookup(objName);
         }
 
         catch (Exception e) {
-            System.err.println("Exceção no Cliente: " + e.toString());
+            System.err.println("Exceção no Cliente - obtenção do obj: " + e.toString());
             e.printStackTrace();
+            System.exit(0);
         }
     }
 
-    /* main */
-    public static void main(String[] args) {
-        
-        // String host = (args.length < 1) ? null : args[0];
 
-        try {            
+    /* Função auxiliar que recebe um índice de arquivo [0-2] e retorna seu nome */
+    public static String nomeArquivo(int index) {
+        String nome;
+
+        switch (index) {
+            case 0: nome = ARQUIVO_A; break;
+            case 1: nome = ARQUIVO_B; break;
+            case 2: nome = ARQUIVO_C; break;
+            default: nome = null; break;
+        }
+
+        return nome;
+    }
+
+
+    /* Main */
+    public static void main(String[] args) {
+
+        try {
             Cliente cliente1 = new Cliente();
             Cliente cliente2 = new Cliente();
             Cliente cliente3 = new Cliente();
-            int[] contagem = {0, 0, 0};
-
-            Random r = new Random();
             Cliente cliente;
+            Random r = new Random(); // gerador de números aleatórios
+            int[] contagem = {0, 0, 0};
             int c, arquivo, op;
 
             // escolher aleatoriamente um cliente, uma operação e um arquivo
@@ -60,32 +77,32 @@ public class Cliente {
                 if (contagem[c] >= 10)
                     continue;
 
-                switch (c) {
-                    case 0: cliente = cliente1; break;
-                    case 1: cliente = cliente2; break;
-                    case 2: cliente = cliente3; break;
+                switch (c) { // setar variável cliente como a classe do cliente escolhido
+                    case CLIENTE_1: cliente = cliente1; break;
+                    case CLIENTE_2: cliente = cliente2; break;
+                    case CLIENTE_3: cliente = cliente3; break;
                     default: cliente = null; break;
                 }
                 
                 op = r.nextInt(3);
                 switch (op) {
                     case 0: op = ESCRITA; break;
-                    default: op = LEITURA; break; // para leitura ser mais provável que escrita
+                    default: op = LEITURA; break;
+                    // se cair 0 será escrita e se cair 1 ou 2 será leitura, assim a leitura é mais provável
                 }
 
                 arquivo = r.nextInt(3);
 
-                // enviar requisição e incrementar contagem
+                // chamar método de requisição e incrementar contagem
                 cliente.obj.requisicao(c, op, arquivo);
                 contagem[c]++;
-                cliente.obj.printFila();
             }
-
         }
 
         catch (Exception e) {
             System.err.println("Exceção no Cliente: " + e.toString());
             e.printStackTrace();
+            System.exit(0);
         }
     }
 }

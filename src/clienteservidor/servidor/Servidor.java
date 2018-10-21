@@ -34,6 +34,7 @@ public class Servidor {
         catch (Exception e) {
             System.err.println("Exceção no servidor: " + e.toString());
             e.printStackTrace();
+            System.exit(0);
         }
         
     }

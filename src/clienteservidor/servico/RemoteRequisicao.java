@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import clienteservidor.servico.ThreadOperacao;
+import static clienteservidor.cliente.Cliente.*; // constantes declaradas em Cliente
 
 /*
 Implementação da interface remota.
@@ -19,14 +20,23 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
     /* Função que representa uma requisição vindo de algum cliente para executar uma leitura ou escrita em algum dos arquivos.
     O servidor deve colocar a requisição numa fila e tratá-la. */
     public void requisicao(int cliente, int op, int arquivo) throws RemoteException {
-        // teste
-        System.out.printf("REQUEST: Cliente %d quer fazer %s no arquivo %d.", cliente, op == 0 ? "leitura" : "escrita", arquivo);
-        System.out.println();
+        System.out.printf("REQUEST: Cliente %d quer fazer %s no arquivo %d.%n", cliente, (op == 0 ? "leitura" : "escrita"), arquivo);
+        
+        String nome_arquivo = nomeArquivo(arquivo);
 
-        ThreadOperacao thread = new ThreadOperacao(op, arquivo);
-        thread.setName(cliente + "-" + (op == 0 ? "L" : "E") + "-" + arquivo.charAt(0)); // ex.: "1/E/B" = thread do cliente 1 escrevendo no arquivo B.txt
-        thread.start();
-        System.out.printf("Iniciando a thread %s.%n", thread.getName());
+        try {
+            String threadName = new String(cliente + "-" + (op == 0 ? "L" : "E") + "-" + nome_arquivo.charAt(0));
+            // ex.: "1/E/B" = thread do cliente 1 escrevendo no arquivo B.txt
+            ThreadOperacao thread = new ThreadOperacao(op, arquivo, threadName);
+            thread.start();
+            System.out.printf("Iniciando a thread %s.%n", thread.getName());
+        }
+
+        catch (Exception e) {
+            System.err.println("Exceção no método requisicao: " + e.toString());
+            e.printStackTrace();
+            System.exit(0);
+        }
 
 
 
