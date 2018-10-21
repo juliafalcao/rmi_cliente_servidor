@@ -60,17 +60,15 @@ public class Cliente {
 	/* Nova main */
 	public static void main(String[] args) {
 		try {
-			Cliente cliente1 = new Cliente(CLIENTE_1);
-			Cliente cliente2 = new Cliente(CLIENTE_2);
-			Cliente cliente3 = new Cliente(CLIENTE_3);
+			// criar threads dos 3 clientes e inicializá-las
 
-			ThreadCliente threadCliente1 = new ThreadCliente(cliente1);
-			ThreadCliente threadCliente2 = new ThreadCliente(cliente2);
-			ThreadCliente threadCliente3 = new ThreadCliente(cliente3);
+			ThreadCliente[] threadsClientes = {null, null, null};
 
-			threadCliente1.start();
-			threadCliente2.start();
-			threadCliente3.start();
+			for (int c = 0; c < 3; c++) {
+				ThreadCliente threadCliente = new ThreadCliente(new Cliente(c));
+				threadsClientes[c] = threadCliente;
+				threadCliente.start();
+			}
 		}
 
 		catch (Exception e) {

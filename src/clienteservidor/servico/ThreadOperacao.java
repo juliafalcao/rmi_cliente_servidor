@@ -28,10 +28,11 @@ public class ThreadOperacao extends Thread {
     int op, arquivo; // índices da operação (0 ou 1) e do arquivo (0, 1 ou 2)
     String nomeArquivo;
     String resposta = null; // resposta da operação para enviar ao cliente
+    String conteudo; // o que será escrito no arquivo, null em caso de leitura
     Random r = new Random(System.currentTimeMillis());
 
     int SLEEP_MIN = 5000;
-    int SLEEP_MAX = 15000;
+    int SLEEP_MAX = 10000;
 
 
     /* Construtor que recebe o nome da thread, os identificadores de operação e do arquivo, e uma String de conteúdo se
@@ -52,6 +53,7 @@ public class ThreadOperacao extends Thread {
         this.op = operacao;
         this.arquivo = arquivo;
         nomeArquivo = nomeArquivo(this.arquivo);
+        this.conteudo = conteudo;
     }
 
     /* Código executado pela thread após ser iniciada */
@@ -97,7 +99,7 @@ public class ThreadOperacao extends Thread {
                 System.out.printf("Arquivo %s foi bloqueado.%n", nomeArquivo);
 
                 PrintWriter writer = new PrintWriter(new FileOutputStream(file, true));
-                writer.println("O cliente " + getName().charAt(0) + " esteve aqui!"); // escreve no arquivo
+                writer.println(conteudo); // escreve no arquivo
                 System.out.printf("Thread %s está escrevendo no arquivo %s...%n", getName(), nomeArquivo);
                 Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep por tempo aleatório
                 writer.close();

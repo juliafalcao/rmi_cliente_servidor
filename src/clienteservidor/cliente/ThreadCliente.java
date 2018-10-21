@@ -33,11 +33,11 @@ class ThreadCliente extends Thread {
         for (int i = 0; i < 10; i++) { // gerar 10 requisições
             arquivo = r.nextInt(3); // escolher arquivo aleatório
 
-            op = r.nextInt(3); /* mudar para 2 para igualar as probabilidades */
+            op = r.nextInt(2);
             switch (op) {
                 case 0:
                     op = ESCRITA;
-                    conteudo = "Cliente " + cliente.id + " esteve aqui!\n";
+                    conteudo = "Cliente " + cliente.id + " esteve aqui!";
                     break;
 
                 default:
