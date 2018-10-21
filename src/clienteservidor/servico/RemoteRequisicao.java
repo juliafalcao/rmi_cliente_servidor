@@ -15,7 +15,7 @@ Contém os métodos que serão chamados pelos clientes para efetuar operações 
 */
 public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRequisicao {
 
-    public ArrayList<Thread> listaThreads = new ArrayList<Thread>(); // lista de todas as threads criadas
+    public ArrayList<ThreadOperacao> listaThreads = new ArrayList<ThreadOperacao>(); // lista de todas as threads criadas
     Servidor servidor = null;
 
     /* Construtor */
@@ -32,7 +32,7 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
         arquivo: identificador [0-3] do arquivo no qual será feita a operação
         conteudo: o que será escrito no arquivo, ou null em caso de leitura
     */
-    public void requisicao(int cliente, int op, int arquivo, String conteudo) throws RemoteException {
+    public String requisicao(int cliente, int op, int arquivo, String conteudo) throws RemoteException {
         String nomeArquivo = nomeArquivo(arquivo);
         System.out.printf("Nova requisição chega ao servidor: Cliente %d quer fazer %s no arquivo %s.%n", cliente, (op == 0 ? "leitura" : "escrita"), nomeArquivo.charAt(0));
 
@@ -50,17 +50,20 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
             listaThreads.add(thread);
             thread.start();
 
-            thread.callback();
             System.out.printf("Iniciando a thread %s.%n", thread.getName());
 
             // obter resposta após a thread ser finalizada
-            
+            return thread.resposta();
         }
 
         catch (Exception e) {
             System.err.println("Exceção no RemoteRequisicao, método requisicao: " + e.toString());
             e.printStackTrace();
             System.exit(0);
+        }
+
+        finally {
+            return null;
         }
     }
 

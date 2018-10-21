@@ -17,7 +17,7 @@ import static clienteservidor.cliente.Cliente.*;
 Classe que representa uma thread, sendo que cada thread é criada para efetuar uma operação de leitura ou escrita em um arquivo,
 conforme requisitado por algum cliente.
 */
-public class ThreadOperacao implements Runnable  {
+public class ThreadOperacao extends Thread {
 
     protected static boolean[] locks = {false, false, false};
     /* Múltiplas threads podem ler um arquivo ao mesmo tempo, mas somente um pode escrever por vez.
