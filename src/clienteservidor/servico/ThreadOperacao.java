@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.FileOutputStream;
 
 import clienteservidor.servidor.Servidor;
 import static clienteservidor.cliente.Cliente.*;
@@ -85,7 +86,7 @@ public class ThreadOperacao extends Thread {
                 locks[arq] = true; // bloqueia arquivo para escrita
                 System.out.printf("Arquivo %s foi bloqueado para escrita.%n", nome_arquivo);
 
-                PrintWriter writer = new PrintWriter(file);
+                PrintWriter writer = new PrintWriter(new FileOutputStream(file, true));
                 writer.println(r.nextInt(1000)); // escreve número aleatório entre 0 e 1000 no arquivo
                 System.out.printf("Thread %s está escrevendo no arquivo %s.%n", getName(), nome_arquivo);
                 Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX));

@@ -24,7 +24,8 @@ public class Servidor {
     public static void main(String[] args) {
 
         try {
-            Registry registry = LocateRegistry.createRegistry(2020);
+            Registry registry = LocateRegistry.createRegistry(1099);
+            int port = registry.REGISTRY_PORT;
 
             InterfaceRequisicao obj = new RemoteRequisicao();
             registry.rebind("Requisicao", obj);
