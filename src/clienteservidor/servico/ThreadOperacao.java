@@ -84,7 +84,7 @@ public class ThreadOperacao extends Thread {
                 Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep para a thread não ser rápida demais
                 in.close();
 
-                resposta = "Cliente " + getName().charAt(0) + " leu " + conteudo.length() + " do arquivo " + nomeArquivo + ".\n";
+                resposta = "Cliente " + getName().charAt(0) + " leu " + conteudo.length() + " caracteres do arquivo " + nomeArquivo + ".";
             }
 
             else { // efetuar escrita
@@ -105,7 +105,7 @@ public class ThreadOperacao extends Thread {
                 locks[arquivo] = false;
                 System.out.printf("Arquivo %s foi desbloqueado.%n", nomeArquivo);
 
-                resposta = "Cliente " + getName().charAt(0) + " escreveu uma linha no arquivo " + nomeArquivo + ".\n";
+                resposta = "Cliente " + getName().charAt(0) + " escreveu uma linha no arquivo " + nomeArquivo + ".";
             }
 
             System.out.printf("Thread %s terminou sua operação.%n", getName());

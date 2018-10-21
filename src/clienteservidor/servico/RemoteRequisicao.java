@@ -62,9 +62,7 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
             System.exit(0);
         }
 
-        finally {
-            return null;
-        }
+        return null;
     }
 
     public void printStatus() throws RemoteException {

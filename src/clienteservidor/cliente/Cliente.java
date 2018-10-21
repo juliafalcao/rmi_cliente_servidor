@@ -9,6 +9,7 @@ import java.lang.Thread;
 
 import clienteservidor.servico.*;
 import clienteservidor.servidor.*;
+import clienteservidor.cliente.ThreadCliente;
 
 
 /*
@@ -17,7 +18,7 @@ Classe principal que vai gerar os 3 clientes e suas requisições de leitura e e
 public class Cliente {
 
 	public int id;
-	private InterfaceRequisicao obj; // a interface do objeto remoto
+	protected InterfaceRequisicao obj; // a interface do objeto remoto
 
 	/* constantes */
 	public static final String ARQUIVO_A = "A.txt";
@@ -56,193 +57,20 @@ public class Cliente {
 		}
 	}
 
-	/* Main */
-	/*
+	/* Nova main */
 	public static void main(String[] args) {
-
 		try {
 			Cliente cliente1 = new Cliente(CLIENTE_1);
 			Cliente cliente2 = new Cliente(CLIENTE_2);
 			Cliente cliente3 = new Cliente(CLIENTE_3);
-			Cliente cliente;
-			Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
-			int[] contagem = {0, 0, 0}; // contagem de requisições por cliente
-			int c, arquivo, op;
-			String conteudo; // o que será escrito no arquivo, em caso de leitura
-		
-			// escolher aleatoriamente um cliente, uma operação e um arquivo
-			// roda até todos os clientes terem feito 10 requisições cada
-			while (contagem[CLIENTE_1] + contagem[CLIENTE_2] + contagem[CLIENTE_3] < 30) {
 
-				c = r.nextInt(3); // escolhe cliente aleatório
+			ThreadCliente threadCliente1 = new ThreadCliente(cliente1);
+			ThreadCliente threadCliente2 = new ThreadCliente(cliente2);
+			ThreadCliente threadCliente3 = new ThreadCliente(cliente3);
 
-				if (contagem[c] == 10) { // se o cliente sorteado já completou 10, escolher outro
-					continue;
-				}
-
-				switch (c) { // setar variável cliente como a classe do cliente escolhido
-					case CLIENTE_1: cliente = cliente1; break;
-					case CLIENTE_2: cliente = cliente2; break;
-					case CLIENTE_3: cliente = cliente3; break;
-					default: cliente = null; break;
-				}
-
-				arquivo = r.nextInt(3);
-				
-				op = r.nextInt(3); // mudar para 2 para igualar as probabilidades
-				
-				switch (op) {
-					case 0:
-					op = ESCRITA;
-					conteudo = "Cliente " + c + " esteve aqui!\n";
-					break;
-
-					default: op = LEITURA;
-					conteudo = null;
-					break;
-				}
-				
-				System.out.printf("Cliente %d quer fazer uma %s no arquivo %s.%n", c, op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
-
-				// chamar método de requisição e incrementar contagem
-				cliente.obj.requisicao(c, op, arquivo, conteudo);
-				contagem[c]++;
-
-				System.out.printf("Contagem de requisições: %d / %d / %d%n", contagem[0], contagem[1], contagem[2]);
-			}
-		}
-
-		catch (Exception e) {
-			System.err.println("Exceção no Cliente: " + e.toString());
-			e.printStackTrace();
-			System.exit(0);
-		}
-	} */
-
-	/* Nova main */
-	public static void main(String[] args) {
-		try {
-			Thread Cliente1Requests = new Thread() {
-				Cliente cliente1 = new Cliente(CLIENTE_1);
-				Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
-				int arquivo, op; // o que será escrito no arquivo, em caso de leitura
-				String conteudo;
-
-				public void run() {
-					for (int i = 0; i < 10; i++) { // gerar 10 requests
-						arquivo = r.nextInt(3);
-
-						op = r.nextInt(3); /* mudar para 2 para igualar as probabilidades */
-						switch (op) {
-							case 0:
-								op = ESCRITA;
-								conteudo = "Cliente 1 esteve aqui!\n";
-								break;
-	
-							default:
-								op = LEITURA;
-								conteudo = null;
-								break;
-						}
-						
-						System.out.printf("Cliente 1 quer fazer uma %s no arquivo %s.%n", op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
-						
-						// chamar método de requisição e incrementar contagem
-						try {
-							String retorno = cliente1.obj.requisicao(CLIENTE_1, op, arquivo, conteudo);
-							System.out.println("Retorno: " + retorno);
-						}
-
-						catch (RemoteException e) {
-							System.err.println("RemoteException no Cliente1Requests.");
-							e.printStackTrace();
-						}
-					}
-				}
-			};
-
-			Thread Cliente2Requests = new Thread() {
-				Cliente cliente2 = new Cliente(CLIENTE_2);
-				Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
-				int arquivo, op; // o que será escrito no arquivo, em caso de leitura
-				String conteudo;
-
-				public void run() {
-					for (int i = 0; i < 10; i++) { // gerar 10 requests
-						arquivo = r.nextInt(3);
-
-						op = r.nextInt(3); /* mudar para 2 para igualar as probabilidades */
-						switch (op) {
-							case 0:
-								op = ESCRITA;
-								conteudo = "Cliente 2 esteve aqui!\n";
-								break;
-	
-							default:
-								op = LEITURA;
-								conteudo = null;
-								break;
-						}
-						
-						System.out.printf("Cliente 2 quer fazer uma %s no arquivo %s.%n", op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
-						
-						// chamar método de requisição e incrementar contagem
-						try {
-							String retorno = cliente2.obj.requisicao(CLIENTE_2, op, arquivo, conteudo);
-							System.out.println("Retorno: " + retorno);
-						}
-
-						catch (RemoteException e) {
-							System.err.println("RemoteException no Cliente2Requests.");
-							e.printStackTrace();
-						}
-					}
-				}
-			};
-
-			Thread Cliente3Requests = new Thread() {
-				Cliente cliente3 = new Cliente(CLIENTE_3);
-				Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
-				int arquivo, op; // o que será escrito no arquivo, em caso de leitura
-				String conteudo;
-
-				public void run() {
-					for (int i = 0; i < 10; i++) { // gerar 10 requests
-						arquivo = r.nextInt(3);
-
-						op = r.nextInt(3); /* mudar para 2 para igualar as probabilidades */
-						switch (op) {
-							case 0:
-								op = ESCRITA;
-								conteudo = "Cliente 3 esteve aqui!\n";
-								break;
-	
-							default:
-								op = LEITURA;
-								conteudo = null;
-								break;
-						}
-						
-						System.out.printf("Cliente 3 quer fazer uma %s no arquivo %s.%n", op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
-						
-						// chamar método de requisição e incrementar contagem
-						try {
-							String retorno = cliente3.obj.requisicao(CLIENTE_3, op, arquivo, conteudo);
-							System.out.println("Retorno: " + retorno);
-						}
-
-						catch (RemoteException e) {
-							System.err.println("RemoteException no Cliente3Requests.");
-							e.printStackTrace();
-						}
-					}
-				}
-			};
-
-
-			Cliente1Requests.start();
-			Cliente2Requests.start();
-			Cliente3Requests.start();
+			threadCliente1.start();
+			threadCliente2.start();
+			threadCliente3.start();
 		}
 
 		catch (Exception e) {
