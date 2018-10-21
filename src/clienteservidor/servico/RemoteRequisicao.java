@@ -49,6 +49,8 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
 
             listaThreads.add(thread);
             thread.start();
+
+            thread.callback();
             System.out.printf("Iniciando a thread %s.%n", thread.getName());
 
             // obter resposta após a thread ser finalizada
