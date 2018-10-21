@@ -20,19 +20,26 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
     /* Construtor */
     public RemoteRequisicao(Servidor servidor) throws RemoteException {
         super();
+        this.servidor = servidor;
     }
 
     /* Função que representa uma requisição feita por algum cliente para executar uma leitura ou escrita em algum dos arquivos.
     O servidor cria uma thread para a operação. */
     public void requisicao(int cliente, int op, int arquivo) throws RemoteException {
         String nomeArquivo = nomeArquivo(arquivo);
-
         System.out.printf("Nova requisição chega ao servidor: Cliente %d quer fazer %s no arquivo %s.%n", cliente, (op == 0 ? "leitura" : "escrita"), nomeArquivo.charAt(0));
 
         try {
             String threadName = new String(cliente + "-" + (op == 0 ? "L" : "E") + "-" + nomeArquivo.charAt(0));
-            // ex.: "1/E/B" = thread do cliente 1 escrevendo no arquivo B.txt
+            // ex.: "1-E-B" = thread do cliente 1 escrevendo no arquivo B.txt
             ThreadOperacao thread = new ThreadOperacao(op, arquivo, threadName);
+            
+            if (servidor.temPrioridade()) {
+                if (op == LEITURA) {
+                    thread.setPriority(10); /* em construção */
+                }
+            }
+
             listaThreads.add(thread);
             thread.start();
             System.out.printf("Iniciando a thread %s.%n", thread.getName());

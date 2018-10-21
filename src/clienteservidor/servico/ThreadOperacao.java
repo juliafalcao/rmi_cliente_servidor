@@ -25,7 +25,7 @@ public class ThreadOperacao extends Thread {
     A lista é estática, então é compartilhada entre todas as instâncias da classe.
     */
 
-    int op, arq; // índices da operação (0 ou 1) e do arquivo (0, 1 ou 2)
+    int op, arquivo; // índices da operação (0 ou 1) e do arquivo (0, 1 ou 2)
     String nomeArquivo;
     Random r = new Random(System.currentTimeMillis());
 
@@ -42,9 +42,9 @@ public class ThreadOperacao extends Thread {
             throw new IllegalArgumentException("O valor de op deve ser 0 (leitura) ou 1 (escrita).");
         }
 
-        op = operacao;
-        arq = arquivo;
-        nomeArquivo = nomeArquivo(arq);
+        this.op = operacao;
+        this.arquivo = arquivo;
+        nomeArquivo = nomeArquivo(this.arquivo);
     }
 
     /* Código executado pela thread após ser iniciada */
@@ -58,7 +58,7 @@ public class ThreadOperacao extends Thread {
             }
 
             // checar se o arquivo não está bloqueado para escrita, e se estiver, esperar um tempo e checar novamente
-            while (locks[arq]) {
+            while (locks[arquivo]) {
                 System.out.printf("Thread %s não pode ler o arquivo %s pois ele está bloqueado.%n", getName(), nomeArquivo);
                 Thread.sleep(SLEEP_MIN);
             }
@@ -78,12 +78,12 @@ public class ThreadOperacao extends Thread {
             }
 
             else { // efetuar escrita
-                if (locks[arq]) {
+                if (locks[arquivo]) {
                     System.err.println("ERRO: permitiu chegar na escrita mas o lock está ativado.");
                     System.exit(0);
                 }
 
-                locks[arq] = true; // bloqueia arquivo para escrita
+                locks[arquivo] = true; // bloqueia arquivo para escrita
                 System.out.printf("Arquivo %s foi bloqueado.%n", nomeArquivo);
 
                 PrintWriter writer = new PrintWriter(new FileOutputStream(file, true));
@@ -92,7 +92,7 @@ public class ThreadOperacao extends Thread {
                 Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep por tempo aleatório
                 writer.close();
 
-                locks[arq] = false;
+                locks[arquivo] = false;
                 System.out.printf("Arquivo %s foi desbloqueado.%n", nomeArquivo);
             }
 

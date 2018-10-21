@@ -6,11 +6,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
 import java.rmi.Naming;
 
-import clienteservidor.servico.InterfaceRequisicao;
-import clienteservidor.servico.RemoteRequisicao;
+import clienteservidor.servico.*;
 
 /*
-Servidor multithreaded que recebe pedidos, coloca-os numa fila e realiza operações de leitura e escrita em 3 arquivos diferentes.
+Servidor multithreaded que recebe pedidos de leitura e escrita em arquivos e cria uma thread para cada.
 */
 
 public class Servidor {
@@ -22,15 +21,20 @@ public class Servidor {
         prioritario = servidorPrioritario;
     }
 
+    /* Função para checar se o servidor é prioritário ou não */
+    public boolean temPrioridade() {
+        return prioritario;
+    }
+
 
     /* Main */
     public static void main(String[] args) {
 
         try {
-            Servidor servidor = new Servidor(False); /* mudar boolean para demonstrar ambos os servidores */
+            Servidor servidor = new Servidor(false); /* mudar boolean para demonstrar ambos os servidores */
             Registry registry = LocateRegistry.createRegistry(1099); // criação do Registro RMI
             InterfaceRequisicao obj = new RemoteRequisicao(servidor); // criação do objeto remoto
-            registry.rebind("Requisicao", obj);
+            registry.rebind("Request", obj);
             System.out.println("Servidor está rodando e pronto para uso.");
         }
 

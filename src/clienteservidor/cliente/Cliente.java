@@ -25,7 +25,7 @@ public class Cliente {
     public static final int CLIENTE_1 = 0;
     public static final int CLIENTE_2 = 1;
     public static final int CLIENTE_3 = 2;
-    public static final String objName = "rmi://localhost:1099/Requisicao";
+    public static final String objName = "rmi://localhost:1099/Request";
 
 
     /* Construtor */
