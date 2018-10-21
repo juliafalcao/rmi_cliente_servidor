@@ -32,7 +32,7 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
         arquivo: identificador [0-3] do arquivo no qual será feita a operação
         conteudo: o que será escrito no arquivo, ou null em caso de leitura
     */
-    public String requisicao(int cliente, int op, int arquivo, String conteudo) throws RemoteException {
+    public void requisicao(int cliente, int op, int arquivo, String conteudo) throws RemoteException {
         String nomeArquivo = nomeArquivo(arquivo);
         System.out.printf("Nova requisição chega ao servidor: Cliente %d quer fazer %s no arquivo %s.%n", cliente, (op == 0 ? "leitura" : "escrita"), nomeArquivo.charAt(0));
 
@@ -52,7 +52,7 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
             System.out.printf("Iniciando a thread %s.%n", thread.getName());
 
             // obter resposta após a thread ser finalizada
-            return thread.resposta();
+            
         }
 
         catch (Exception e) {
@@ -60,8 +60,6 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
             e.printStackTrace();
             System.exit(0);
         }
-
-        return null;
     }
 
     public void printStatus() throws RemoteException {

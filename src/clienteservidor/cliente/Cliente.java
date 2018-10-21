@@ -102,8 +102,7 @@ public class Cliente {
                 System.out.printf("Cliente %d quer fazer uma %s no arquivo %s.%n", c, op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
                 
                 // chamar método de requisição e incrementar contagem
-                String retorno = cliente.obj.requisicao(c, op, arquivo, conteudo);
-                System.out.println("Retorno: " + retorno);
+                cliente.obj.requisicao(c, op, arquivo, conteudo);
                 contagem[c]++;
 
                 System.out.printf("Contagem de requisições: %d / %d / %d%n", contagem[0], contagem[1], contagem[2]);

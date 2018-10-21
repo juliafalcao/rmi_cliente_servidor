@@ -15,7 +15,7 @@ Serve para fazer chamada ao método da interface remota que mostra o status de t
 public class Debug {
 
     private InterfaceRequisicao obj; // a interface do objeto remoto
-    public static final String objName = "rmi://localhost:1099/Requisicao";
+    public static final String objName = "rmi://localhost:1099/Request";
 
 
     /* Construtor */

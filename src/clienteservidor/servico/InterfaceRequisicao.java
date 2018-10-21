@@ -16,7 +16,7 @@ public interface InterfaceRequisicao extends Remote {
     ArrayList<Thread> listaThreads = null;
     Servidor servidor = null;
 
-    public String requisicao(int cliente, int op, int arquivo, String conteudo) throws RemoteException;
+    public void requisicao(int cliente, int op, int arquivo, String conteudo) throws RemoteException;
 
     public void printStatus() throws RemoteException;
 
