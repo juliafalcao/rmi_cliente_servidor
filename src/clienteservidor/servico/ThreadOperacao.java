@@ -19,20 +19,12 @@ conforme requisitado por algum cliente.
 */
 public class ThreadOperacao extends Thread {
 
-    protected static boolean[] locks = {false, false, false};
-    /* Múltiplas threads podem ler um arquivo ao mesmo tempo, mas somente um pode escrever por vez.
-    Nessa lista locks, os booleanos indicam se cada arquivo está bloqueado para escrita ou não.
-    A lista é estática, então é compartilhada entre todas as instâncias da classe.
-    */
-
-    int op, arquivo; // índices da operação (0 ou 1) e do arquivo (0, 1 ou 2)
+    int op, arq; // índices da operação (0 ou 1) e do arquivo (0, 1 ou 2)
     String nomeArquivo;
     String resposta = null; // resposta da operação para enviar ao cliente
     String conteudo; // o que será escrito no arquivo, null em caso de leitura
-    Random r = new Random(System.currentTimeMillis());
 
-    int SLEEP_MIN = 5000;
-    int SLEEP_MAX = 10000;
+    public static Arquivo[] arquivos = {new Arquivo("A.txt"), new Arquivo("B.txt"), new Arquivo("C.txt")};
 
 
     /* Construtor que recebe o nome da thread, os identificadores de operação e do arquivo, e uma String de conteúdo se
@@ -51,8 +43,8 @@ public class ThreadOperacao extends Thread {
         }
 
         this.op = operacao;
-        this.arquivo = arquivo;
-        nomeArquivo = nomeArquivo(this.arquivo);
+        this.arq = arquivo;
+        nomeArquivo = nomeArquivo(this.arq);
         this.conteudo = conteudo;
     }
 
@@ -60,54 +52,19 @@ public class ThreadOperacao extends Thread {
     @Override
     public void run() {
         try {
-            File file = new File("src\\clienteservidor\\arquivos\\" + nomeArquivo);
-
-            if (!file.canRead() || !file.canWrite()) { // checar permissões
-                System.err.println("Arquivo não está acessível para leitura ou para escrita.");
-                throw new IOException();
-            }
-
-            // checar se o arquivo não está bloqueado para escrita, e se estiver, esperar um tempo e checar novamente
-            while (locks[arquivo]) {
-                System.out.printf("Thread %s não pode ler o arquivo %s pois ele está bloqueado.%n", getName(), nomeArquivo);
-                Thread.sleep(SLEEP_MIN);
-            }
-
+            Arquivo arquivo = arquivos[arq]; // obter Arquivo correspondente a requisição atual
 
             if (op == 0) { // efetuar leitura
-                String conteudo = "";
-                
-                Scanner in = new Scanner(file);
-                while (in.hasNext()) {
-                    conteudo += in.nextLine();
-                }
-
-                System.out.printf("Thread %s está lendo o arquivo %s...%n", getName(), nomeArquivo);
-                Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep para a thread não ser rápida demais
-                in.close();
-
-                resposta = "Cliente " + getName().charAt(0) + " leu " + conteudo.length() + " caracteres do arquivo " + nomeArquivo + ".";
+                String conteudoLido = arquivo.leitura(getName()); // faz leitura e sleep
+                resposta = "Cliente " + getName().charAt(0) + " leu " + conteudoLido.length() + " caracteres do arquivo " + nomeArquivo + ".";
             }
 
             else { // efetuar escrita
-                if (locks[arquivo]) {
-                    System.err.println("ERRO: permitiu chegar na escrita mas o lock está ativado.");
-                    System.exit(0);
+                
+                boolean retorno = arquivo.escrita(conteudo, getName());
+                if (retorno) {
+                    resposta = "Cliente " + getName().charAt(0) + " escreveu uma linha no arquivo " + nomeArquivo + ".";
                 }
-
-                locks[arquivo] = true; // bloqueia arquivo para escrita
-                System.out.printf("Arquivo %s foi bloqueado.%n", nomeArquivo);
-
-                PrintWriter writer = new PrintWriter(new FileOutputStream(file, true));
-                writer.println(conteudo); // escreve no arquivo
-                System.out.printf("Thread %s está escrevendo no arquivo %s...%n", getName(), nomeArquivo);
-                Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep por tempo aleatório
-                writer.close();
-
-                locks[arquivo] = false;
-                System.out.printf("Arquivo %s foi desbloqueado.%n", nomeArquivo);
-
-                resposta = "Cliente " + getName().charAt(0) + " escreveu uma linha no arquivo " + nomeArquivo + ".";
             }
 
             System.out.printf("Thread %s terminou sua operação.%n", getName());
@@ -120,10 +77,10 @@ public class ThreadOperacao extends Thread {
         }
     }
  
-    /* funçao de retorno da thread */
+    /* Função de retorno da thread */
     public String resposta() {
         while (isAlive()) {
-            // gambiarríssima pra esperar a thread ser finalizada
+            // espera a thread ser finalizada
         }
 
         return resposta;

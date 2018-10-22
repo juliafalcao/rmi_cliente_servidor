@@ -30,8 +30,8 @@ public class Servidor {
     public static void main(String[] args) {
 
         try {
-            Servidor servidor = new Servidor(false); /* mudar boolean para demonstrar ambos os servidores */
-            Registry registry = LocateRegistry.createRegistry(1099); // criação do Registro RMI
+            Servidor servidor = new Servidor(true); /* mudar boolean para demonstrar ambos os servidores */
+            Registry registry = LocateRegistry.createRegistry(1099); // criação do Registro RMI na porta 1099
             InterfaceRequisicao obj = new RemoteRequisicao(servidor); // criação do objeto remoto
             registry.rebind("Request", obj);
             System.out.println("Servidor está rodando e pronto para uso.");

@@ -34,7 +34,7 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
     */
     public String requisicao(int cliente, int op, int arquivo, String conteudo) throws RemoteException {
         String nomeArquivo = nomeArquivo(arquivo);
-        System.out.printf("Nova requisição chega ao servidor: Cliente %d quer fazer %s no arquivo %s.%n", cliente, (op == 0 ? "leitura" : "escrita"), nomeArquivo.charAt(0));
+        System.out.printf("Nova requisição: Cliente %d quer fazer %s no arquivo %s.%n", cliente, (op == 0 ? "leitura" : "escrita"), nomeArquivo);
 
         try {
             String threadName = new String(cliente + "-" + (op == 0 ? "L" : "E") + "-" + nomeArquivo.charAt(0));
@@ -48,9 +48,8 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
             }
 
             listaThreads.add(thread);
-            thread.start();
-
             System.out.printf("Iniciando a thread %s.%n", thread.getName());
+            thread.start();
 
             // obter resposta após a thread ser finalizada
             return thread.resposta();
