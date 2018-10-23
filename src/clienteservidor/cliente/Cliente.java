@@ -6,10 +6,11 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.Random;
 import java.lang.Thread;
+import java.util.ArrayList;
 
 import clienteservidor.servico.*;
 import clienteservidor.servidor.*;
-import clienteservidor.cliente.ThreadCliente;
+import clienteservidor.cliente.ThreadClienteTeste;
 
 
 /*
@@ -62,11 +63,14 @@ public class Cliente {
 		try {
 			// criar threads dos 3 clientes e inicializá-las
 
-			ThreadCliente[] threadsClientes = {null, null, null};
+			/* TESTE: gerando 10 clientes fazendo operações no A.txt para ver se a prioridade tá funcionando */
+			ArrayList<ThreadClienteTeste> threadsClientes = new ArrayList<ThreadClienteTeste>(); /* TESTE */
 
-			for (int c = 0; c < 3; c++) {
-				ThreadCliente threadCliente = new ThreadCliente(new Cliente(c));
-				threadsClientes[c] = threadCliente;
+			// for (int c = 0; c < 3; c++) {
+			for (int c = 0; c < 10; c++) { /* TESTE */
+				// ThreadCliente threadCliente = new ThreadCliente(new Cliente(c));
+				ThreadClienteTeste threadCliente = new ThreadClienteTeste(new Cliente(c)); /* TESTE */
+				threadsClientes.add(threadCliente);
 				threadCliente.start();
 			}
 		}

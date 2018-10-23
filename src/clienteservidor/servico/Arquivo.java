@@ -9,6 +9,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.lang.Thread;
 import java.util.Random;
 
+/*
+Classe que encapsula um dos arquivos do servidor, nos quais serão feitas operações de leitura e escrita
+requisitadas pelos clientes.
+*/
 
 public class Arquivo {
     public String nomeArquivo;
@@ -18,8 +22,10 @@ public class Arquivo {
     public int SLEEP_MIN = 5000;
     public int SLEEP_MAX = 12000;
 
-    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock(true);
-    /* O arquivo pode ser lido por mais de uma thread ao mesmo tempo, mas só uma pode escrever de cada vez. */
+    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock(false);
+    /* ReadWriteLock é um mecanismo de bloqueio do objeto que possui dois locks, um de leitura de um de escrita.
+    O lock de leitura pode ser adquirido por múltiplas threads ao mesmo tempo, e o de escrita, só por uma thread
+    por vez. Isso permite que várias threads possam ler o arquivo ao mesmo tempo, mas só uma possa escrever. */
 
 
     /* Construtor */
@@ -49,7 +55,9 @@ public class Arquivo {
             }
 
             in.close();
-            Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep para a thread não ser rápida demais
+            // Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep para a thread não ser rápida demais
+            Thread.sleep(SLEEP_MAX); /* TESTE */
+            System.out.printf("Thread %s terminou sua operação.%n", threadName);
         }
 
         catch (Exception e) {
@@ -75,6 +83,7 @@ public class Arquivo {
             writer.println(conteudo);
             writer.close();
             Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX));
+            System.out.printf("Thread %s terminou sua operação.%n", threadName);
         }
 
         catch (Exception e) {

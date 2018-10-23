@@ -41,14 +41,18 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
             // ex.: "1-E-B" = thread do cliente 1 escrevendo no arquivo B.txt
             ThreadOperacao thread = new ThreadOperacao(threadName, op, arquivo, conteudo);
             
+            /* em construção */
+            /* não funcionou */
             if (servidor.temPrioridade()) {
                 if (op == LEITURA) {
-                    thread.setPriority(10); /* em construção */
+                    thread.setPriority(10);
+                } else {
+                    thread.setPriority(1);
                 }
             }
 
             listaThreads.add(thread);
-            System.out.printf("Iniciando a thread %s.%n", thread.getName());
+            System.out.printf("Iniciando a thread %s (prioridade %d).%n", thread.getName(), thread.getPriority());
             thread.start();
 
             // obter resposta após a thread ser finalizada

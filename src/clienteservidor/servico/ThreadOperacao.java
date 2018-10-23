@@ -66,8 +66,6 @@ public class ThreadOperacao extends Thread {
                     resposta = "Cliente " + getName().charAt(0) + " escreveu uma linha no arquivo " + nomeArquivo + ".";
                 }
             }
-
-            System.out.printf("Thread %s terminou sua operação.%n", getName());
         }
 
         catch (Exception e) {
