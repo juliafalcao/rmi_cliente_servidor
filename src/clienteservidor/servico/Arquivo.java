@@ -16,13 +16,19 @@ requisitadas pelos clientes.
 
 public class Arquivo {
     public String nomeArquivo;
-    private String caminho = "src\\clienteservidor\\arquivos\\";
+    private String caminho = "src/clienteservidor/arquivos/";
     private File file;
     Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
     public int SLEEP_MIN = 5000;
     public int SLEEP_MAX = 12000;
 
-    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock(false);
+    /* TODO: MOVER CRIAÇÃO DOS ARQUIVOS PARA DENTRO DO SERVIDOR */
+    
+    private boolean isFair = false; // TODO: definir com base no servidor ser prioritário ou não (prioritário: not fair, normal: fair)
+    /* Quando o lock é "justo", ele tenta respeitar o melhor possível uma ordem de chegada. */
+
+    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock(isFair);
+    /* QUANDO O SERVIDOR NÃO É PRIORITÁRIO O LOCK PRECISA SER FAIR */
     /* ReadWriteLock é um mecanismo de bloqueio do objeto que possui dois locks, um de leitura de um de escrita.
     O lock de leitura pode ser adquirido por múltiplas threads ao mesmo tempo, e o de escrita, só por uma thread
     por vez. Isso permite que várias threads possam ler o arquivo ao mesmo tempo, mas só uma possa escrever. */
@@ -46,7 +52,6 @@ public class Arquivo {
 
         try {
             readWriteLock.readLock().lock();
-
             Scanner in = new Scanner(file);
             System.out.printf("Thread %s está lendo o arquivo %s...%n", threadName, nomeArquivo);
 
@@ -55,8 +60,8 @@ public class Arquivo {
             }
 
             in.close();
-            // Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep para a thread não ser rápida demais
-            Thread.sleep(SLEEP_MAX); /* TESTE */
+            Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep para a thread não ser rápida demais
+            // Thread.sleep(SLEEP_MAX); /* TESTE */
             System.out.printf("Thread %s terminou sua operação.%n", threadName);
         }
 

@@ -60,7 +60,6 @@ public class ThreadOperacao extends Thread {
             }
 
             else { // efetuar escrita
-                
                 boolean retorno = arquivo.escrita(conteudo, getName());
                 if (retorno) {
                     resposta = "Cliente " + getName().charAt(0) + " escreveu uma linha no arquivo " + nomeArquivo + ".";

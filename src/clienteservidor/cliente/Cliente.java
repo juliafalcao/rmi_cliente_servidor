@@ -49,6 +49,7 @@ public class Cliente {
 	}
 
 	/* Função auxiliar que recebe um índice de arquivo [0-2] e retorna seu nome */
+	/* TODO: isso tem que estar no SERVIDOR */
 	public static String nomeArquivo(int index) {
 		switch (index) {
 			case 0: return ARQUIVO_A;
@@ -61,13 +62,15 @@ public class Cliente {
 	/* Nova main */
 	public static void main(String[] args) {
 		try {
+			/* TODO: criar Cliente separado para o teste do servidor prioritário */
+			
 			// criar threads dos 3 clientes e inicializá-las
 
 			/* TESTE: gerando 10 clientes fazendo operações no A.txt para ver se a prioridade tá funcionando */
 			ArrayList<ThreadClienteTeste> threadsClientes = new ArrayList<ThreadClienteTeste>(); /* TESTE */
 
 			// for (int c = 0; c < 3; c++) {
-			for (int c = 0; c < 10; c++) { /* TESTE */
+			for (int c = 0; c < 3; c++) { /* TESTE */
 				// ThreadCliente threadCliente = new ThreadCliente(new Cliente(c));
 				ThreadClienteTeste threadCliente = new ThreadClienteTeste(new Cliente(c)); /* TESTE */
 				threadsClientes.add(threadCliente);

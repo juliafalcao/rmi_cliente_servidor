@@ -52,8 +52,9 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
             }
 
             listaThreads.add(thread);
-            System.out.printf("Iniciando a thread %s (prioridade %d).%n", thread.getName(), thread.getPriority());
             thread.start();
+            System.out.printf("Iniciando a thread %s (prioridade %d).%n", thread.getName(), thread.getPriority());
+            /* se esse print ficar antes do thread.start() o servidor prioritário não funciona JULIA não faz isso de novo */
 
             // obter resposta após a thread ser finalizada
             return thread.resposta();
