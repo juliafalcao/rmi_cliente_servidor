@@ -58,9 +58,14 @@ public class ThreadOperacao extends Thread {
             }
 
             else { // efetuar escrita
-                boolean retorno = arquivo.escrita(conteudo, getName());
+                boolean retorno = arquivo.escrita(conteudo, getName()); // faz escrita e sleep
                 if (retorno) {
                     resposta = "Cliente " + getName().charAt(0) + " escreveu uma linha no arquivo " + nomeArquivo + ".";
+                }
+
+                else { // método de escrita retornou erro
+                    resposta = "Cliente não conseguiu escrever no arquivo " + nomeArquivo + ".";
+                    System.exit(0);
                 }
             }
         }
@@ -72,10 +77,11 @@ public class ThreadOperacao extends Thread {
         }
     }
  
-    /* Função de retorno da thread */
+    /* Função de "retorno" da thread */
     public String resposta() {
         while (isAlive()) {
-            // espera a thread ser finalizada
+            // espera a thread ser finalizda
+            // graças a essa gambiarra, cada cliente só gera sua próxima requisição depois de receber o retorno da última
         }
 
         return resposta;

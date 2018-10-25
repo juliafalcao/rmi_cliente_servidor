@@ -47,8 +47,9 @@ public class Cliente {
 				threadsClientes.add(threadCliente);
 			}
 
-			for (int c = 0; c < 3; c++) // separado do acima para iniciar as threads com menor intervalo de tempo
+			for (int c = 0; c < 3; c++) {// separado do acima para iniciar as threads com menor intervalo de tempo
 				threadsClientes.get(c).start();
+			}
 			
 		}
 

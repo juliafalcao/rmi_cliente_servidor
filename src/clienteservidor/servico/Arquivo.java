@@ -48,13 +48,13 @@ public class Arquivo {
     }
 
     /* Método que adquire um lock de leitura, efetua a leitura do arquivo completo e retorna o conteúdo lido. */
-    public String leitura(String threadName) {
+    public String leitura(String nomeThread) {
 
         try {
             readWriteLock.readLock().lock();
             String conteudo = "";
             Scanner reader = new Scanner(file);
-            System.out.printf("Thread %s está lendo o arquivo %s...%n", threadName, nomeArquivo);
+            System.out.printf("Thread %s está lendo o arquivo %s...%n", nomeThread, nomeArquivo);
 
             while (reader.hasNext()) {
                 conteudo += reader.nextLine();
@@ -63,7 +63,7 @@ public class Arquivo {
             reader.close();
 
             Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // pausa thread para a "leitura" demorar um pouco
-            System.out.printf("Thread %s terminou sua operação.%n", threadName);
+            System.out.printf("Thread %s terminou sua operação.%n", nomeThread);
             return conteudo;
         }
 
@@ -81,16 +81,16 @@ public class Arquivo {
 
     /* Método que adquire o lock de escrita, efetua escrita do conteudo no arquivo, e retorna um booleano
     que diz se a escrita foi feita com sucesso ou não. */
-    public boolean escrita(String conteudo, String threadName) {
+    public boolean escrita(String conteudo, String nomeThread) {
         try {
             readWriteLock.writeLock().lock();
-            System.out.printf("Arquivo %s foi bloqueado para escrita pela thread %s.%n", nomeArquivo, threadName);
+            System.out.printf("Thread %s bloqueou o arquivo %s para escrita.%n", nomeThread, nomeArquivo);
             PrintWriter writer = new PrintWriter(new FileOutputStream(file, true));
-            System.out.printf("Thread %s está escrevendo no arquivo %s...%n", threadName, nomeArquivo);
+            System.out.printf("Thread %s está escrevendo no arquivo %s...%n", nomeThread, nomeArquivo);
             writer.println(conteudo);
             writer.close();
             Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX));
-            System.out.printf("Thread %s terminou sua operação.%n", threadName);
+            System.out.printf("Thread %s terminou sua operação.%n", nomeThread);
         }
 
         catch (Exception e) {

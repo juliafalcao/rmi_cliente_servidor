@@ -51,17 +51,20 @@ public class ClienteTeste {
 	/* Nova main */
 	public static void main(String[] args) {
 		try {
-			ArrayList<ThreadClienteTeste> threadsClientes = new ArrayList<ThreadClienteTeste>(); /* TESTE */
+			ArrayList<ThreadClienteTeste> threadsClientes = new ArrayList<ThreadClienteTeste>();
 
-			// for (int c = 0; c < 3; c++) {
-			for (int c = 0; c < 3; c++) {
+			int n = 10;
+
+			for (int c = 0; c < n; c++) {
 				ThreadClienteTeste threadCliente = new ThreadClienteTeste(new Cliente(c));
 				threadsClientes.add(threadCliente);
 			}
 
-			for (int c = 0; c < 3; c++) // separado do acima para iniciar as threads com menor intervalo de tempo
+			for (int c = 0; c < n; c++) { // separado do acima para iniciar as threads com menor intervalo de tempo
 				threadsClientes.get(c).start();
+			}
 		}
+		
 
 		catch (Exception e) {
 			System.err.println("Exceção no ClienteTeste: " + e.toString());

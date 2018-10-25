@@ -9,7 +9,7 @@ import clienteservidor.servidor.*;
 import static clienteservidor.cliente.Cliente.*;
 
 /*
-Thread que, para um cliente passado no construtor, gera requisições aleatórias e faz chamadas ao servidor.
+Versão modificada de ThreadCliente para demonstrar o servidor prioritário.
 */
 class ThreadClienteTeste extends Thread {
     public Cliente cliente = null;
@@ -34,7 +34,6 @@ class ThreadClienteTeste extends Thread {
             arquivo = 0;
 
             switch (cliente.id) {
-                // case 0: op = 0; break; /* MESMO COM A REQ DE ESCRITA SENDO GERADA POR ÚLTIMO ELA ESTÁ SENDO INICIADA ANTES */
                 case 1: op = 1; break; // cliente 1 vai querer escrever
                 default: op = 0; break; // todos os outros clientes vão querer ler
             }

@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import clienteservidor.servico.*;
 
 /*
-Servidor multithreaded que recebe pedidos de leitura e escrita em arquivos e cria uma thread para cada.
+Servidor multithreaded que recebe pedidos de leitura e escrita em arquivos através de chamadas ao método
+do objeto remoto RMI.
 */
 
 public class Servidor {
@@ -32,7 +33,7 @@ public class Servidor {
     /* Construtor */
     public Servidor(boolean prioritario) {
         Servidor.prioritario = prioritario;
-        /* uso ruim de variável estática mas como só vai ter um Servidor tá tudo bem */
+        /* uso feio de variável estática mas como só vai ter um Servidor tá tudo bem */
     }
 
     /* Função para checar se o servidor é prioritário ou não */
@@ -69,7 +70,7 @@ public class Servidor {
             InterfaceRequisicao obj = new RemoteRequisicao(servidor); // criação do objeto remoto
             registry.rebind("Request", obj); // associa o objeto ao nome "Request" no Registro
 
-            System.out.printf("%nServidor (%s) está rodando e pronto para uso.%n", Servidor.prioritario ? "prioritário" : "normal");
+            System.out.printf("%nServidor (%s) está rodando e pronto para uso.%n%n", Servidor.prioritario ? "prioritário" : "normal");
         }
 
         catch (Exception e) {

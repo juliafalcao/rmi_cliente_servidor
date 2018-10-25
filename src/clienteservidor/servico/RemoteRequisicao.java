@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 import clienteservidor.servico.ThreadOperacao;
 import clienteservidor.cliente.Cliente;
-import static clienteservidor.servidor.Servidor.*; // constantes
 import clienteservidor.servidor.Servidor;
+import static clienteservidor.servidor.Servidor.*; // constantes
 
 /*
 Objeto remoto que contém os métodos que podem ser chamados pelos clientes para efetuar operações nos arquivos.
@@ -32,25 +32,24 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
     */
     public String requisicao(int cliente, int op, int arquivo, String conteudo) throws RemoteException {
         String nomeArquivo = nomeArquivo(arquivo);
-        System.out.printf("Nova requisição: Cliente %d quer fazer %s no arquivo %s.%n", cliente, (op == 0 ? "leitura" : "escrita"), nomeArquivo);
+        System.out.printf("Nova requisição: Cliente %d quer fazer %s no arquivo %s.%n", cliente, (op == LEITURA ? "leitura" : "escrita"), nomeArquivo);
         try {
-            String threadName = new String(cliente + "-" + (op == 0 ? "L" : "E") + "-" + nomeArquivo.charAt(0));
+            String nomeThread = new String(cliente + "-" + (op == LEITURA ? "L" : "E") + "-" + nomeArquivo.charAt(0));
             // ex.: "1-E-B" = thread do cliente 1 escrevendo no arquivo B.txt
-            ThreadOperacao thread = new ThreadOperacao(threadName, op, arquivo, conteudo);
+            ThreadOperacao thread = new ThreadOperacao(nomeThread, op, arquivo, conteudo);
             
-            
-            if (servidor.temPrioridade()) { /* definir prioridades para as threads */
+            if (Servidor.temPrioridade()) {
                 if (op == LEITURA) {
-                    thread.setPriority(10);
+                    thread.setPriority(Thread.MAX_PRIORITY);
                 } else {
-                    thread.setPriority(1);
+                    thread.setPriority(Thread.MIN_PRIORITY);
                 }
             }
 
             listaThreads.add(thread);
             thread.start();
             System.out.printf("Iniciando a thread %s (prioridade %d).%n", thread.getName(), thread.getPriority());
-            /* se esse print ficar antes do thread.start() o servidor prioritário não funciona JULIA não faz isso de novo */
+            /* se esse print ficar antes do thread.start() o servidor prioritário não funciona, não mexer nisso de novo */
 
             // obter resposta após a thread ser finalizada
             return thread.resposta();
