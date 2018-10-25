@@ -58,11 +58,13 @@ public class ClienteTeste {
 			for (int c = 0; c < n; c++) {
 				ThreadClienteTeste threadCliente = new ThreadClienteTeste(new Cliente(c));
 				threadsClientes.add(threadCliente);
+				threadCliente.start();
+				Thread.sleep(500);
 			}
 
-			for (int c = 0; c < n; c++) { // separado do acima para iniciar as threads com menor intervalo de tempo
+			/* for (int c = 0; c < n; c++) { // separado do acima para iniciar as threads com menor intervalo de tempo
 				threadsClientes.get(c).start();
-			}
+			} */
 		}
 		
 

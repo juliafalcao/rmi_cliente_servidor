@@ -14,8 +14,8 @@ import clienteservidor.servidor.Servidor;
 import static clienteservidor.servidor.Servidor.*; // constantes
 
 /*
-Classe que representa uma thread, sendo que cada thread é criada para efetuar uma operação de leitura ou escrita em um arquivo,
-conforme requisitado por algum cliente.
+Classe que representa uma thread, sendo que cada thread é criada para efetuar uma operação de leitura
+ou escrita em um arquivo, conforme requisitado por algum cliente.
 */
 public class ThreadOperacao extends Thread {
 
@@ -34,8 +34,8 @@ public class ThreadOperacao extends Thread {
             System.err.println("Exceção no construtor de ThreadOperacao.");
             throw new IllegalArgumentException("O valor de op deve ser 0 (leitura) ou 1 (escrita).");
         }
-
-        if (op == ESCRITA && conteudo == null) {
+        
+        else if (op == ESCRITA && conteudo == null) {
             System.err.println("Erro em ThreadOperacao: Operação de escrita mas conteúdo nulo. Nada será escrito.");
             conteudo = "";
         }
@@ -50,7 +50,7 @@ public class ThreadOperacao extends Thread {
     @Override
     public void run() {
         try {
-            Arquivo arquivo = Servidor.arquivos[arq]; // obter Arquivo correspondente a requisição atual
+            Arquivo arquivo = Servidor.arquivos[arq]; // obter objeto Arquivo correspondente ao da requisição
 
             if (op == 0) { // efetuar leitura
                 String conteudoLido = arquivo.leitura(getName()); // faz leitura e sleep
@@ -59,11 +59,10 @@ public class ThreadOperacao extends Thread {
 
             else { // efetuar escrita
                 boolean retorno = arquivo.escrita(conteudo, getName()); // faz escrita e sleep
+
                 if (retorno) {
                     resposta = "Cliente " + getName().charAt(0) + " escreveu uma linha no arquivo " + nomeArquivo + ".";
-                }
-
-                else { // método de escrita retornou erro
+                } else { // método de escrita retornou false (erro)
                     resposta = "Cliente não conseguiu escrever no arquivo " + nomeArquivo + ".";
                     System.exit(0);
                 }

@@ -30,7 +30,7 @@ public class Arquivo {
     No servidor prioritário, queremos um lock "injusto", assim a prioridade das threads definirá a ordem de acesso aos arquivos.
     */
 
-    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock(isFair);
+    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock(/*isFair*/ true);
     /* ReadWriteLock é um mecanismo de bloqueio do objeto que possui dois locks: o readLock pode ser adquirido por múltiplas
     threads ao mesmo tempo desde que ninguém esteja lendo o arquivo, ou seja, possua o writeLock, que só pode ser adquirido
     por uma thread por vez, desde que ninguém esteja lendo ou escrevendo no arquivo. */
@@ -49,7 +49,6 @@ public class Arquivo {
 
     /* Método que adquire um lock de leitura, efetua a leitura do arquivo completo e retorna o conteúdo lido. */
     public String leitura(String nomeThread) {
-
         try {
             readWriteLock.readLock().lock();
             String conteudo = "";
