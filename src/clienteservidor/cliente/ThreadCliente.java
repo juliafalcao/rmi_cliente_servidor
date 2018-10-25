@@ -6,7 +6,7 @@ import java.lang.Thread;
 
 import clienteservidor.servico.*;
 import clienteservidor.servidor.*;
-import static clienteservidor.cliente.Cliente.*;
+import static clienteservidor.servidor.Servidor.*;
 
 /*
 Thread que, para um cliente passado no construtor, gera requisições aleatórias e faz chamadas ao servidor.

@@ -6,17 +6,15 @@ import java.util.ArrayList;
 
 import clienteservidor.servico.ThreadOperacao;
 import clienteservidor.cliente.Cliente;
-import static clienteservidor.cliente.Cliente.*; // constantes declaradas em Cliente
+import static clienteservidor.servidor.Servidor.*; // constantes
 import clienteservidor.servidor.Servidor;
 
 /*
-Implementação da interface remota.
-Contém os métodos que serão chamados pelos clientes para efetuar operações nos arquivos.
+Objeto remoto que contém os métodos que podem ser chamados pelos clientes para efetuar operações nos arquivos.
 */
 public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRequisicao {
-
+    public Servidor servidor = null; // o servidor no qual o objeto está
     public ArrayList<ThreadOperacao> listaThreads = new ArrayList<ThreadOperacao>(); // lista de todas as threads criadas
-    Servidor servidor = null;
 
     /* Construtor */
     public RemoteRequisicao(Servidor servidor) throws RemoteException {
@@ -35,15 +33,13 @@ public class RemoteRequisicao extends UnicastRemoteObject implements InterfaceRe
     public String requisicao(int cliente, int op, int arquivo, String conteudo) throws RemoteException {
         String nomeArquivo = nomeArquivo(arquivo);
         System.out.printf("Nova requisição: Cliente %d quer fazer %s no arquivo %s.%n", cliente, (op == 0 ? "leitura" : "escrita"), nomeArquivo);
-
         try {
             String threadName = new String(cliente + "-" + (op == 0 ? "L" : "E") + "-" + nomeArquivo.charAt(0));
             // ex.: "1-E-B" = thread do cliente 1 escrevendo no arquivo B.txt
             ThreadOperacao thread = new ThreadOperacao(threadName, op, arquivo, conteudo);
             
-            /* em construção */
-            /* não funcionou */
-            if (servidor.temPrioridade()) {
+            
+            if (servidor.temPrioridade()) { /* definir prioridades para as threads */
                 if (op == LEITURA) {
                     thread.setPriority(10);
                 } else {

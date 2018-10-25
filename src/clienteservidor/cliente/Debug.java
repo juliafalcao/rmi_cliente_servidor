@@ -36,7 +36,6 @@ public class Debug {
 
         try {
             Debug debug = new Debug();
-            
             debug.obj.printStatus(); // printar status de todas as threads
         }
 

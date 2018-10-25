@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.io.FileOutputStream;
 
 import clienteservidor.servidor.Servidor;
-import static clienteservidor.cliente.Cliente.*;
+import static clienteservidor.servidor.Servidor.*; // constantes
 
 /*
 Classe que representa uma thread, sendo que cada thread é criada para efetuar uma operação de leitura ou escrita em um arquivo,
@@ -23,8 +23,6 @@ public class ThreadOperacao extends Thread {
     String nomeArquivo;
     String resposta = null; // resposta da operação para enviar ao cliente
     String conteudo; // o que será escrito no arquivo, null em caso de leitura
-
-    public static Arquivo[] arquivos = {new Arquivo("A.txt"), new Arquivo("B.txt"), new Arquivo("C.txt")};
 
 
     /* Construtor que recebe o nome da thread, os identificadores de operação e do arquivo, e uma String de conteúdo se
@@ -52,7 +50,7 @@ public class ThreadOperacao extends Thread {
     @Override
     public void run() {
         try {
-            Arquivo arquivo = arquivos[arq]; // obter Arquivo correspondente a requisição atual
+            Arquivo arquivo = Servidor.arquivos[arq]; // obter Arquivo correspondente a requisição atual
 
             if (op == 0) { // efetuar leitura
                 String conteudoLido = arquivo.leitura(getName()); // faz leitura e sleep

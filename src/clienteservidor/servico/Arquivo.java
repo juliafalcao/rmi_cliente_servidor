@@ -9,29 +9,31 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.lang.Thread;
 import java.util.Random;
 
+import clienteservidor.servidor.Servidor;
+
 /*
 Classe que encapsula um dos arquivos do servidor, nos quais serão feitas operações de leitura e escrita
 requisitadas pelos clientes.
 */
-
 public class Arquivo {
     public String nomeArquivo;
     private String caminho = "src/clienteservidor/arquivos/";
     private File file;
     Random r = new Random(System.currentTimeMillis()); // gerador de números aleatórios
+
     public int SLEEP_MIN = 5000;
     public int SLEEP_MAX = 12000;
 
-    /* TODO: MOVER CRIAÇÃO DOS ARQUIVOS PARA DENTRO DO SERVIDOR */
-    
-    private boolean isFair = false; // TODO: definir com base no servidor ser prioritário ou não (prioritário: not fair, normal: fair)
-    /* Quando o lock é "justo", ele tenta respeitar o melhor possível uma ordem de chegada. */
+    private boolean isFair = !(Servidor.temPrioridade());
+    /* Quando o lock é "justo", ele tenta respeitar o melhor possível uma ordem de chegada.
+    No servidor normal (não-prioritário), é isso que queremos.
+    No servidor prioritário, queremos um lock "injusto", assim a prioridade das threads definirá a ordem de acesso aos arquivos.
+    */
 
     private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock(isFair);
-    /* QUANDO O SERVIDOR NÃO É PRIORITÁRIO O LOCK PRECISA SER FAIR */
-    /* ReadWriteLock é um mecanismo de bloqueio do objeto que possui dois locks, um de leitura de um de escrita.
-    O lock de leitura pode ser adquirido por múltiplas threads ao mesmo tempo, e o de escrita, só por uma thread
-    por vez. Isso permite que várias threads possam ler o arquivo ao mesmo tempo, mas só uma possa escrever. */
+    /* ReadWriteLock é um mecanismo de bloqueio do objeto que possui dois locks: o readLock pode ser adquirido por múltiplas
+    threads ao mesmo tempo desde que ninguém esteja lendo o arquivo, ou seja, possua o writeLock, que só pode ser adquirido
+    por uma thread por vez, desde que ninguém esteja lendo ou escrevendo no arquivo. */
 
 
     /* Construtor */
@@ -39,30 +41,30 @@ public class Arquivo {
         this.nomeArquivo = nomeArquivo;
         this.file = new File(caminho + nomeArquivo);
 
-        if (!file.canRead() || !file.canWrite()) { // checar permissões
+        if (!file.canRead() || !file.canWrite()) { // checar acesso e permissões
             System.err.println("Arquivo não está acessível para leitura ou para escrita.");
             System.exit(0);
         }
     }
 
-    /* Método que adquire um lock de leitura, efetua leitura, coloca a thread em sleep por um tempo aleatório
-    e retorna o conteúdo lido. */
+    /* Método que adquire um lock de leitura, efetua a leitura do arquivo completo e retorna o conteúdo lido. */
     public String leitura(String threadName) {
-        String conteudo = "";
 
         try {
             readWriteLock.readLock().lock();
-            Scanner in = new Scanner(file);
+            String conteudo = "";
+            Scanner reader = new Scanner(file);
             System.out.printf("Thread %s está lendo o arquivo %s...%n", threadName, nomeArquivo);
 
-            while (in.hasNext()) {
-                conteudo += in.nextLine();
+            while (reader.hasNext()) {
+                conteudo += reader.nextLine();
             }
 
-            in.close();
-            Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // sleep para a thread não ser rápida demais
-            // Thread.sleep(SLEEP_MAX); /* TESTE */
+            reader.close();
+
+            Thread.sleep(SLEEP_MIN + r.nextInt(SLEEP_MAX)); // pausa thread para a "leitura" demorar um pouco
             System.out.printf("Thread %s terminou sua operação.%n", threadName);
+            return conteudo;
         }
 
         catch (Exception e) {
@@ -74,11 +76,11 @@ public class Arquivo {
             readWriteLock.readLock().unlock();
         }
 
-        return conteudo;
+        return null;
     }
 
-    /* Método que adquire o lock de escrita, efetua escrita do conteudo no arquiv, coloca a thread em sleep por um tempo aleatório
-    e retorna um booleano dizendo se a escrita foi feita com sucesso ou não. */
+    /* Método que adquire o lock de escrita, efetua escrita do conteudo no arquivo, e retorna um booleano
+    que diz se a escrita foi feita com sucesso ou não. */
     public boolean escrita(String conteudo, String threadName) {
         try {
             readWriteLock.writeLock().lock();

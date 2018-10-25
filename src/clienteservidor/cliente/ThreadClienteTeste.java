@@ -39,7 +39,7 @@ class ThreadClienteTeste extends Thread {
                 default: op = 0; break; // todos os outros clientes vão querer ler
             }
             
-            System.out.printf("Cliente %d quer fazer uma %s no arquivo %s.%n", cliente.id, op == 0 ? "leitura" : "escrita", nomeArquivo(arquivo));
+            System.out.printf("Cliente %d quer fazer uma %s no arquivo %s.%n", cliente.id, op == 0 ? "leitura" : "escrita", Servidor.nomeArquivo(arquivo));
             
             // chamar método de requisição e incrementar contagem
             try {
