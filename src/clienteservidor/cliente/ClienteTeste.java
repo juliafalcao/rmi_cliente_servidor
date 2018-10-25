@@ -53,7 +53,7 @@ public class ClienteTeste {
 		try {
 			ArrayList<ThreadClienteTeste> threadsClientes = new ArrayList<ThreadClienteTeste>();
 
-			int n = 10;
+			int n = 3;
 
 			for (int c = 0; c < n; c++) {
 				ThreadClienteTeste threadCliente = new ThreadClienteTeste(new Cliente(c));
