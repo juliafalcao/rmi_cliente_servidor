@@ -1,0 +1,2 @@
+Cliente 2 esteve aqui!
+Cliente 1 esteve aqui!
