@@ -27,7 +27,6 @@ public class Cliente {
 
 		try {
 			obj = (InterfaceRequisicao) Naming.lookup(objName); // busca objeto a partir do nome no Registry
-			System.out.println(objName);
 		}
 
 		catch (Exception e) {

@@ -27,7 +27,7 @@ public class Servidor {
 	public static final int CLIENTE_1 = 0;
 	public static final int CLIENTE_2 = 1;
 	public static final int CLIENTE_3 = 2;
-    public static final String objName = "rmi://54.207.103.149:1099/Request";
+    public static final String objName = "rmi://54.233.142.193:1099/Request";
     
 
     /* Construtor */
@@ -65,12 +65,11 @@ public class Servidor {
 
             Servidor servidor = new Servidor(isPrioritario);
 
-            System.setProperty( "java.rmi.server.hostname", "54.207.103.149" );
+            System.setProperty( "java.rmi.server.hostname", "54.233.142.193" );
 
             /* setup do RMI */
             Registry registry = LocateRegistry.createRegistry(1099); // criação do Registro na porta 1099
             InterfaceRequisicao obj = new RemoteRequisicao(servidor); // criação do objeto remoto
-            System.out.println(obj);
             registry.rebind("Request", obj); // associa o objeto ao nome "Request" no Registro
 
             System.out.printf("%nServidor (%s) está rodando e pronto para uso.%n%n", Servidor.prioritario ? "prioritário" : "normal");
